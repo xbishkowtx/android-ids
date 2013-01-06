@@ -7,22 +7,27 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.Service;
+import android.util.Log;
 
 public abstract class Monitor {
 
-	protected final long INTERVAL = 60L * 1000L;
+	public static final long FLUSH_INTERVAL = 60L * 1000L;
+	public static final long MONITOR_INTERVAL = 20L * 1000L;
 
 	protected final File csv;
 	protected final Service parentService;
 	protected final StringBuffer buffer;
+	protected final Timer flushTimer;
 
 	public Monitor(Service parentService, File dir) {
 		this.parentService = parentService;
-		this.csv = new File(dir, getFileName());
-		if (!this.csv.exists()) {
+		csv = new File(dir, getFileName());
+		if (!csv.exists()) {
+			Log.i("androidIDS", "CSV nonexistent");
 			writeHeader();
 		}
 		buffer = new StringBuffer();
+		flushTimer = new Timer();
 	}
 
 	protected abstract String getFileName();
@@ -31,14 +36,16 @@ public abstract class Monitor {
 
 	public abstract void start();
 
-	public abstract void stop();
+	public void stop() {
+		flushTimer.cancel();
+		flushTimer.purge();
+	}
 
 	protected void writeHeader() {
 		FileWriter writer = null;
 		try {
 			csv.createNewFile();
 			writer = new FileWriter(csv);
-			writer.append("test\n");
 			writer.append(getHeader());
 			writer.flush();
 		} catch (IOException e) {
@@ -60,7 +67,7 @@ public abstract class Monitor {
 			byte[] rawData = buffer.toString().getBytes("UTF-8");
 			String data = new String(rawData, "UTF-8");
 			buffer.setLength(0);
-			writer = new FileWriter(csv);
+			writer = new FileWriter(csv, true);
 			writer.append(data);
 			writer.flush();
 		} catch (IOException e) {
@@ -78,9 +85,7 @@ public abstract class Monitor {
 	}
 
 	protected void scheduleFlushTask() {
-		Timer timer = new Timer();
-		TimerTask task = new FlushTask();
-		timer.scheduleAtFixedRate(task, INTERVAL, INTERVAL);
+		flushTimer.scheduleAtFixedRate(new FlushTask(), FLUSH_INTERVAL, FLUSH_INTERVAL);
 	}
 
 	protected class FlushTask extends TimerTask {

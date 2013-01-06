@@ -11,9 +11,8 @@ import android.hardware.SensorManager;
 
 public class OrientationMonitor extends Monitor implements SensorEventListener {
 
-	private final float NOISE = (float) 5.0;
-	private final String FILENAME = "orientation.csv";
-	private final String HEADER = "timestamp,x,y,z\n";
+	public static final String FILENAME = "orientation.csv";
+	public static final String HEADER = "timestamp,x,y,z\n";
 
 	private SensorManager sensorManager;
 	private Sensor orientation;
@@ -44,6 +43,7 @@ public class OrientationMonitor extends Monitor implements SensorEventListener {
 	@Override
 	public void stop() {
 		sensorManager.unregisterListener(this);
+		super.stop();
 	}
 
 	@Override
@@ -57,9 +57,7 @@ public class OrientationMonitor extends Monitor implements SensorEventListener {
 		float x = event.values[0];
 		float y = event.values[1];
 		float z = event.values[2];
-		if (Math.abs(x) > NOISE || Math.abs(y) > NOISE || Math.abs(z) > NOISE) {
-			buffer.append(System.currentTimeMillis() + "," + x + "," + y + "," + z + "\n");
-		}
+		buffer.append(System.currentTimeMillis() + "," + x + "," + y + "," + z + "\n");
 
 	}
 

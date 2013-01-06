@@ -11,10 +11,9 @@ import android.hardware.SensorManager;
 
 public class AccelerometerMonitor extends Monitor implements SensorEventListener {
 
-	private final float NOISE = (float) 0.1;
-
-	private final String FILENAME = "accelerometer.csv";
-	private final String HEADER = "timestamp,acceleration\n";
+	public static final float NOISE = (float) 0.1;
+	public static final String FILENAME = "accelerometer.csv";
+	public static final String HEADER = "timestamp,x,y,z\n";
 
 	private SensorManager sensorManager;
 	private Sensor orientation;
@@ -44,6 +43,7 @@ public class AccelerometerMonitor extends Monitor implements SensorEventListener
 	@Override
 	public void stop() {
 		sensorManager.unregisterListener(this);
+		super.stop();
 	}
 
 	@Override
