@@ -1,20 +1,19 @@
 package pl.edu.agh.ids.monitors;
 
 import java.io.File;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import android.app.ActivityManager;
+import android.app.ActivityManager.MemoryInfo;
 import android.app.Service;
 import android.content.Context;
 
 public class ProcessMonitor extends Monitor {
 
 	public static final String FILENAME = "proc.csv";
-	public static final String HEADER = "timestamp,pid,uid,name\n";
+	public static final String HEADER = "timestamp,procCount,availMem\n";
 	private final Timer timer;
-	private List<ActivityManager.RunningAppProcessInfo> procInfo;
 	private ActivityManager activityManager;
 
 	public ProcessMonitor(Service parentService, File dir) {
@@ -35,7 +34,7 @@ public class ProcessMonitor extends Monitor {
 	@Override
 	public void start() {
 		activityManager = (ActivityManager) parentService.getSystemService(Context.ACTIVITY_SERVICE);
-		timer.scheduleAtFixedRate(new procTimer(), 0L, MONITOR_INTERVAL);
+		timer.scheduleAtFixedRate(new ProcTimer(), 0L, MONITOR_INTERVAL);
 	}
 
 	@Override
@@ -45,15 +44,15 @@ public class ProcessMonitor extends Monitor {
 		super.stop();
 	}
 
-	protected class procTimer extends TimerTask {
+	protected class ProcTimer extends TimerTask {
 
 		@Override
 		public void run() {
 			long timestamp = System.currentTimeMillis();
-			procInfo = activityManager.getRunningAppProcesses();
-			for (ActivityManager.RunningAppProcessInfo proc : ProcessMonitor.this.procInfo) {
-				buffer.append(timestamp + "," + proc.pid + "," + proc.uid + "," + proc.processName + "\n");
-			}
+			int procCount = activityManager.getRunningAppProcesses().size();
+			MemoryInfo memInfo = new MemoryInfo();
+			activityManager.getMemoryInfo(memInfo);
+			buffer.append(timestamp + "," + procCount + "," + memInfo.availMem + "\n");
 		}
 
 	}

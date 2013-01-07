@@ -12,7 +12,7 @@ import android.util.Log;
 public abstract class Monitor {
 
 	public static final long FLUSH_INTERVAL = 60L * 1000L;
-	public static final long MONITOR_INTERVAL = 20L * 1000L;
+	public static final long MONITOR_INTERVAL = 10L * 1000L;
 
 	protected final File csv;
 	protected final Service parentService;
