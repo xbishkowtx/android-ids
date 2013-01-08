@@ -4,11 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import pl.edu.agh.ids.monitors.AccelerometerMonitor;
-import pl.edu.agh.ids.monitors.CallMonitor;
+import pl.edu.agh.ids.monitors.MainMonitor;
 import pl.edu.agh.ids.monitors.Monitor;
 import pl.edu.agh.ids.monitors.OrientationMonitor;
-import pl.edu.agh.ids.monitors.ProcessMonitor;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -49,9 +47,10 @@ public class AndroidIDSService extends Service {
 	private void initMonitors() {
 		monitors = new ArrayList<Monitor>();
 		monitors.add(new OrientationMonitor(this, dir));
-		monitors.add(new AccelerometerMonitor(this, dir));
-		monitors.add(new ProcessMonitor(this, dir));
-		monitors.add(new CallMonitor(this, dir));
+		// monitors.add(new AccelerometerMonitor(this, dir));
+		monitors.add(new MainMonitor(this, dir));
+		// monitors.add(new CallMonitor(this, dir));
+		// monitors.add(new CpuMonitor(this, dir));
 	}
 
 	@Override

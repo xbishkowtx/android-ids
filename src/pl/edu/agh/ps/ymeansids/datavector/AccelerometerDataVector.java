@@ -1,4 +1,4 @@
-package pl.edu.agh.ymeans.datavector;
+package pl.edu.agh.ps.ymeansids.datavector;
 
 public class AccelerometerDataVector extends SensorDataVector {
 

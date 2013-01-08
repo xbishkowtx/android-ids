@@ -12,7 +12,7 @@ import android.content.Context;
 public class ProcessMonitor extends Monitor {
 
 	public static final String FILENAME = "proc.csv";
-	public static final String HEADER = "timestamp,procCount,availMem\n";
+	public static final String HEADER = "timestamp,procCount,availableMem\n";
 	private final Timer timer;
 	private ActivityManager activityManager;
 
@@ -52,7 +52,8 @@ public class ProcessMonitor extends Monitor {
 			int procCount = activityManager.getRunningAppProcesses().size();
 			MemoryInfo memInfo = new MemoryInfo();
 			activityManager.getMemoryInfo(memInfo);
-			buffer.append(timestamp + "," + procCount + "," + memInfo.availMem + "\n");
+			long freeMem = memInfo.availMem / (1024L * 1024L);
+			buffer.append(timestamp + "," + procCount + "," + freeMem + "\n");
 		}
 
 	}

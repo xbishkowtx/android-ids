@@ -1,6 +1,9 @@
-package pl.edu.agh.ymeans.datavector;
+package pl.edu.agh.ps.ymeansids.datavector;
 
 public class ProcDataVector implements DataVector {
+
+	public static int maxProcCount = 0;
+	public static long maxAvailMem = 0L;
 
 	public final long timestamp;
 	public final int procCount;
@@ -18,8 +21,8 @@ public class ProcDataVector implements DataVector {
 		if (v instanceof ProcDataVector) {
 			ProcDataVector p = (ProcDataVector) v;
 
-			int dx = procCount - p.procCount;
-			double dy = availMem - p.availMem;
+			double dx = (procCount - p.procCount) / maxProcCount;
+			double dy = (availMem - p.availMem) / maxAvailMem;
 
 			return Math.sqrt(dx * dx + dy * dy);
 		} else {
