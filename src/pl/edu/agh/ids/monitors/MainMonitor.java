@@ -17,7 +17,7 @@ import android.net.TrafficStats;
 
 public class MainMonitor extends Monitor {
 
-	public static final String FILENAME = "data.csv";
+	public static final String FILENAME = "main.csv";
 	public static final String HEADER = "timestamp,procCount,availableMem,cpuUser,cpuSystem,mobileRxBytes,mobileRxPackets,mobileTxBytes,mobileTxPackets,allRxBytes,allRxPackets,allTxBytes,allTxPackets,wifiState\n";
 	private final Timer timer;
 	private ActivityManager activityManager;
@@ -115,7 +115,6 @@ public class MainMonitor extends Monitor {
 			double freeMem = memInfo.availMem / (1024L * 1024L);
 
 			int[] cpustats = getCpuUsageStats();
-			buffer.append(timestamp + "," + cpustats[0] + "," + cpustats[1] + "\n");
 
 			double mobileRxBytes = TrafficStats.getMobileRxBytes();
 			double mobileRxPackets = TrafficStats.getMobileRxPackets();
@@ -129,7 +128,10 @@ public class MainMonitor extends Monitor {
 			DetailedState state = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getDetailedState();
 			double wifiState = state.ordinal();
 
-			buffer.append(timestamp + "," + procCount + "," + freeMem + "," + cpustats[0] + "," + cpustats[1] + "," + mobileRxBytes + "," + mobileRxPackets + "," + mobileTxBytes + "," + mobileTxPackets + "," + allRxBytes + "," + allRxPackets + "," + allTxBytes + "," + allTxPackets + "," + wifiState + "\n");
+			double user = cpustats[0];
+			double system = cpustats[1];
+
+			buffer.append(timestamp + "," + procCount + "," + freeMem + "," + user + "," + system + "," + mobileRxBytes + "," + mobileRxPackets + "," + mobileTxBytes + "," + mobileTxPackets + "," + allRxBytes + "," + allRxPackets + "," + allTxBytes + "," + allTxPackets + "," + wifiState + "\n");
 		}
 	}
 
